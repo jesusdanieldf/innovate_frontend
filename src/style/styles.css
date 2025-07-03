@@ -1,0 +1,323 @@
+/* General Styles */
+body {
+    background-color: #f0f2f5;
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    padding: 20px;
+}
+
+h1,
+h2,
+h3 {
+    font-weight: 700;
+    color: #343a40;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-body {
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+/* styles for table */
+.table {
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    width: 100%;
+}
+
+.table thead {
+    background-color: #343a40;
+    color: white;
+    border-radius: 10px;
+}
+
+.table tbody tr {
+    background-color: white;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.table tbody tr:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+}
+
+.table td,
+.table th {
+    padding: 15px;
+    text-align: center;
+}
+
+.table th {
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody td {
+    border-top: none;
+    border-bottom: none;
+}
+
+/* Buttons with effects */
+.btn {
+    padding: 10px 20px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: #0069d9;
+    border-color: #0062cc;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0048a3;
+}
+
+.btn-outline-primary {
+    border-color: #0069d9;
+    color: #0069d9;
+}
+
+.btn-outline-primary:hover {
+    background-color: #0069d9;
+    color: white;
+}
+
+.btn-sm {
+    padding: 5px 10px;
+}
+
+/* Quick actions */
+.actions-section {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.actions-section a {
+    margin: 0 10px;
+}
+
+/* Transition effects */
+.container {
+    animation: fadeInUp 0.5s ease both;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Sidebar header */
+.sidebar-header h4 {
+    color: #ecf0f1;
+}
+
+.sidebar-header hr {
+    border-top: 1px solid #ecf0f1;
+}
+
+/* Sidebar link styling */
+.nav-link {
+    color: #bdc3c7;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 15px;
+    border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-link:hover {
+    background-color: #34495e;
+    color: #fff;
+}
+
+.nav-link .bi {
+    font-size: 1.5rem;
+}
+
+.nav-link .link-text {
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+/* Hover effect on links */
+.nav-item:hover .link-text {
+    color: #f1c40f;
+}
+
+/* Icon styling */
+.nav-link i {
+    transition: color 0.3s;
+}
+
+.nav-item:hover i {
+    color: #f1c40f;
+}
+
+/* Sidebar border and hover effects */
+
+
+/* Responsive */
+@media (max-width: 768px) {
+    #sidebar {
+        width: 200px;
+    }
+
+    .container-fluid {
+        margin-left: 210px;
+    }
+}
+
+/* Icon and drop-down option */
+.user-icon-container {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#user-icon {
+    color: #000000;
+    transition: color 0.3s ease;
+    font-size: 2.5rem;
+    cursor: pointer;
+}
+
+#user-icon:hover {
+    color: #2c3e50;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 90%;
+    right: 0;
+    background-color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    z-index: 1000;
+    padding: 5px 0;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #ffffff;
+    white-space: nowrap;
+}
+
+.dropdown-menu a:hover {
+    background-color: #444;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    /* Hace que el contenedor ocupe toda la altura de la ventana */
+    max-width: 100%;
+    /* Hace que el contenedor ocupe todo el ancho disponible */
+}
+
+/* Sidebar base: configuraciones generales */
+.sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: width 0.3s ease-in-out;
+    overflow: hidden;
+    /* Ocultar contenido que desborda al contraer */
+}
+
+.sidebar.collapsed {
+    width: 80px;
+    /* Ancho cuando está colapsado */
+}
+
+/* Ocultar el contenido textual al colapsar */
+.sidebar .text-content {
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.sidebar.collapsed .text-content {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Botón de logout cuando el sidebar está colapsado */
+.sidebar .btn span {
+    display: inline;
+    /* Texto visible normalmente */
+}
+
+.sidebar.collapsed .btn span {
+    display: none;
+    /* Ocultar texto en colapsado */
+}
+
+/* Ajustes para el contenido principal */
+.main-content {
+    margin-left: 250px;
+    /* Espaciado cuando el sidebar está expandido */
+    transition: margin-left 0.3s ease-in-out;
+}
+
+.sidebar.collapsed+.main-content {
+    margin-left: 70px;
+    /* Espaciado cuando el sidebar está colapsado */
+}
+
+.main-content {
+    transition: margin-left 0.3s ease-in-out;
+    margin-left: 250px; /* Ancho del sidebar */
+  }
+  
+  .main-content.expanded-content {
+    margin-left: 80px; /* Reducido cuando el sidebar está colapsado */
+  }
+

@@ -1,0 +1,46 @@
+/* src/App.css */
+.sidebar {
+  width: 250px;
+}
+
+.user-icon-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#user-icon {
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+#user-icon:hover + .dropdown-menu,
+.dropdown-menu:hover {
+  display: block;
+}
+
+.dropdown-menu a {
+  color: #ffffff;
+  padding: 10px;
+  display: block;
+  text-decoration: none;
+}
+
+.dropdown-menu a:hover {
+  background-color: #444;
+}
+

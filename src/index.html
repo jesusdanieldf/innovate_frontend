@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herramienta Digital para el Aprendizaje de Pintura</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #e67e22;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --accent-color: #2ecc71;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1200/300');
+            background-size: cover;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        
+        header h1 {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        header p {
+            position: relative;
+            z-index: 1;
+            margin: 0.5rem 0 0;
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        section {
+            margin-bottom: 3rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 2rem;
+            transition: transform 0.3s ease;
+        }
+        
+        section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+        }
+        
+        h3 {
+            color: var(--secondary-color);
+        }
+        
+        ul, ol {
+            padding-left: 1.5rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .step {
+            display: flex;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+        
+        .step-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            font-weight: bold;
+        }
+        
+        .step-content {
+            flex-grow: 1;
+        }
+        
+        .techniques {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .technique-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 1rem;
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+        
+        .technique-card h4 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        
+        .tools {
+            margin-top: 1.5rem;
+        }
+        
+        .tool-category {
+            margin-bottom: 1.5rem;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            section {
+                padding: 1.5rem;
+            }
+            
+            .techniques {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Herramienta Digital para el Aprendizaje de Pintura</h1>
+        <p>Asistido por Procesamiento de Imágenes</p>
+    </header>
+    
+    <main>
+        <section id="introduction">
+            <p>Este proyecto se centra en el desarrollo de una herramienta digital innovadora diseñada
+            para facilitar la adquisición de habilidades pictóricas en aprendices de pintura
+            (artistas noveles o principiantes). La herramienta se basa fundamentalmente en el
+            procesamiento digital de imágenes para ofrecer una guía estructurada y progresiva en la
+            replicación de imágenes de referencia, con el objetivo final de fomentar la comprensión
+            de los principios del dibujo y la pintura.</p>
+        </section>
+        
+        <section id="about">
+            <h2>¿De qué trata el proyecto?</h2>
+            <p>El proyecto busca abordar las dificultades iniciales que enfrentan los aprendices de
+            pintura al intentar replicar imágenes. En lugar de simplemente presentar una imagen para
+            copiar, nuestra herramienta digital descompone visualmente la imagen de referencia
+            en etapas progresivas, proporcionando instrucciones claras y visuales en cada paso.
+            Esto permite a los principiantes abordar la complejidad de una imagen de manera
+            gradual, construyendo sus habilidades de forma metódica.</p>
+            
+            <p>La herramienta se concibe como una aplicación o programa interactivo que guiará al
+            usuario a través de las siguientes fases para replicar una imagen seleccionada:</p>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <strong>Análisis y Segmentación Inicial:</strong> La herramienta tomará una imagen digital como
+                        entrada y la someterá a un análisis inicial para identificar sus componentes
+                        visuales clave.
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <strong>Guía para el Dibujo Lineal:</strong> En esta etapa, la herramienta resaltará las líneas
+                        estructurales principales de la imagen, posiblemente ofreciendo opciones para
+                        simplificar o visualizar estas líneas de diferentes maneras. Se proporcionarán
+                        indicaciones sobre cómo abordar la composición y las proporciones básicas.
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <strong>Introducción a las Tonalidades Básicas:</strong> La herramienta analizará la distribución
+                        de luces y sombras en la imagen, generando una guía simplificada de las áreas
+                        tonales principales. Se mostrará cómo identificar y esbozar estas áreas.
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <strong>Desarrollo de las Tonalidades Intermedias y el Volumen:</strong> Progresivamente, la
+                        herramienta guiará al usuario en la identificación y aplicación de tonalidades más
+                        sutiles, explicando cómo crear la ilusión de volumen y profundidad a través del
+                        claroscuro.
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <strong>Aplicación del Color (si aplica):</strong> Para imágenes a color, la herramienta
+                        proporcionará una guía sobre la identificación de los colores primarios,
+                        secundarios y terciarios presentes en diferentes áreas. Podría ofrecer paletas de
+                        colores sugeridas y estrategias para la mezcla.
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">6</div>
+                    <div class="step-content">
+                        <strong>Detalles y Acabado:</strong> Finalmente, la herramienta podría ofrecer indicaciones
+                        sobre cómo abordar los detalles finos y los toques finales para completar la
+                        réplica.
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="functionality">
+            <h2>¿Cómo funciona?</h2>
+            <p>El funcionamiento de la herramienta se basa en la aplicación de diversas técnicas de
+            procesamiento digital de imágenes. Al cargar una imagen, el software realizará las
+            siguientes operaciones (entre otras posibles):</p>
+            
+            <div class="techniques">
+                <div class="technique-card">
+                    <h4>Detección de Bordes (Edge Detection)</h4>
+                    <p>Algoritmos como Canny, Sobel o Laplacian se utilizarán para identificar y resaltar los contornos y las líneas principales de la imagen, facilitando la creación del dibujo lineal inicial.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Segmentación de Imágenes (Image Segmentation)</h4>
+                    <p>Técnicas como el umbralizado (thresholding), el crecimiento de regiones (region growing) o algoritmos más avanzados como k-means clustering o watershed se emplearán para dividir la imagen en áreas con características visuales similares.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Cuantización del Color (Color Quantization)</h4>
+                    <p>Para simplificar la paleta de colores, se podrían usar algoritmos de cuantización para reducir el número de colores distintos en la imagen a un conjunto más manejable para un principiante.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Filtrado y Suavizado (Filtering and Smoothing)</h4>
+                    <p>Se podrían aplicar filtros para simplificar las transiciones tonales o de color, facilitando la comprensión de las áreas principales.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Visualización y Realce (Visualization and Enhancement)</h4>
+                    <p>La herramienta generará visualizaciones específicas para cada etapa, resaltando las líneas, las áreas tonales o los colores relevantes.</p>
+                </div>
+                
+                <div class="technique-card">
+                    <h4>Análisis de Histogramas (Histogram Analysis)</h4>
+                    <p>El análisis de los histogramas de intensidad y color podría ayudar a identificar la distribución de luces, sombras y colores predominantes en la imagen.</p>
+                </div>
+            </div>
+            
+            <p class="mt-4">La interacción del usuario se realizará a través de una interfaz gráfica intuitiva. El usuario
+            podrá cargar una imagen, seleccionar el nivel de dificultad o el tipo de guía que desea, y
+            navegar a través de las diferentes etapas de la replicación.</p>
+        </section>
+        
+        <section id="purpose">
+            <h2>¿Para qué sirve?</h2>
+            <p>Esta herramienta tiene como objetivo principal:</p>
+            
+            <ul>
+                <li><strong>Facilitar el aprendizaje de los fundamentos del dibujo y la pintura:</strong> Al
+                descomponer la imagen en pasos lógicos, los principiantes pueden comprender
+                mejor la estructura, la composición, el valor tonal y el color.</li>
+                
+                <li><strong>Reducir la frustración inicial:</strong> La complejidad de replicar una imagen completa
+                puede ser abrumadora. La guía paso a paso ofrece un enfoque más manejable y
+                motivador.</li>
+                
+                <li><strong>Desarrollar la observación y el análisis visual:</strong> Los usuarios aprenderán a
+                observar las imágenes de manera más crítica, identificando líneas, formas, luces,
+                sombras y colores de forma sistemática.</li>
+                
+                <li><strong>Proporcionar una práctica estructurada:</strong> La herramienta ofrece un marco de
+                trabajo claro para la práctica de la replicación, lo cual es fundamental en el
+                desarrollo de habilidades artísticas.</li>
+                
+                <li><strong>Servir como un recurso educativo complementario:</strong> Puede ser utilizada en
+                clases de arte para principiantes o como una herramienta de autoaprendizaje.</li>
+            </ul>
+        </section>
+        
+        <section id="techniques">
+            <h2>¿Qué técnicas de procesamiento de imágenes utilizaremos?</h2>
+            <p>Como se mencionó anteriormente, algunas de las técnicas de procesamiento de
+            imágenes que se podrían utilizar incluyen:</p>
+            
+            <ul>
+                <li><strong>Detección de Bordes:</strong> Canny, Sobel, Prewitt, Laplacian.</li>
+                <li><strong>Segmentación de Imágenes:</strong> Umbralizado, crecimiento de regiones, k-means clustering, watershed.</li>
+                <li><strong>Cuantización del Color:</strong> Algoritmos basados en histogramas, k-means.</li>
+                <li><strong>Filtrado:</strong> Filtros Gaussianos, filtros de mediana para suavizado.</li>
+                <li><strong>Transformaciones Morfológicas:</strong> Erosión, dilatación (posiblemente para simplificar formas).</li>
+                <li><strong>Análisis de Características:</strong> (En etapas más avanzadas, podría incluir análisis de texturas o formas).</li>
+            </ul>
+            
+            <p>La selección específica de las técnicas dependerá de los resultados experimentales y de
+            la eficacia de cada método para guiar el proceso de aprendizaje.</p>
+        </section>
+        
+        <section id="tools">
+            <h2>¿Qué programas tendremos que usar?</h2>
+            <p>Para el desarrollo de esta herramienta, podríamos considerar el uso de los siguientes
+            programas y bibliotecas:</p>
+            
+            <div class="tools">
+                <div class="tool-category">
+                    <h3>Lenguaje de Programación</h3>
+                    <p><strong>Python</strong> es una excelente opción debido a su amplia
+                    gama de bibliotecas para el procesamiento de imágenes y su relativa facilidad de
+                    aprendizaje.</p>
+                </div>
+                
+                <div class="tool-category">
+                    <h3>Bibliotecas de Procesamiento de Imágenes</h3>
+                    <ul>
+                        <li><strong>OpenCV (cv2):</strong> Una biblioteca muy completa con funciones para la
+                        lectura, manipulación, análisis y visualización de imágenes.</li>
+                        
+                        <li><strong>Scikit-image:</strong> Otra biblioteca poderosa con algoritmos para
+                        segmentación, detección de características, filtrado y más.</li>
+                        
+                        <li><strong>Pillow (PIL):</strong> Útil para operaciones básicas de manipulación de imágenes.</li>
+                    </ul>
+                </div>
+                
+                <div class="tool-category">
+                    <h3>Interfaz Gráfica de Usuario (GUI)</h3>
+                    <ul>
+                        <li><strong>Tkinter:</strong> Una biblioteca estándar de Python para crear interfaces gráficas
+                        sencillas.</li>
+                        
+                        <li><strong>PyQt o Kivy:</strong> Opciones más avanzadas para interfaces de usuario más
+                        complejas y personalizadas.</li>
+                    </ul>
+                </div>
+                
+                <div class="tool-category">
+                    <h3>Entorno de Desarrollo Integrado (IDE)</h3>
+                    <ul>
+                        <li><strong>Visual Studio Code (VS Code):</strong> Un IDE popular con excelente soporte para
+                        Python.</li>
+                        
+                        <li><strong>PyCharm:</strong> Un IDE específico para Python con herramientas avanzadas
+                        para el desarrollo.</li>
+                        
+                        <li><strong>Jupyter Notebooks:</strong> Útiles para la exploración de datos y el desarrollo de
+                        prototipos de algoritmos.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <p>La elección final de los programas dependerá de la complejidad de la interfaz y de los
+            requisitos específicos del proyecto.</p>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 Herramienta Digital para el Aprendizaje de Pintura</p>
+    </footer>
+</body>
+</html>
