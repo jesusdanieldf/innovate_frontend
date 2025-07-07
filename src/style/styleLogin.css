@@ -1,0 +1,159 @@
+/* Login Component Styles */
+
+/* Contenedor principal */
+.login-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+}
+
+/* Tarjeta principal */
+.login-card {
+  border-radius: 20px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Panel izquierdo */
+.login-left-panel {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 600px;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.1);
+  z-index: 1;
+}
+
+.login-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Logo container */
+.login-logo {
+  width: 80px;
+  height: 80px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Tags decorativos */
+.login-tag {
+  background: rgba(255,255,255,0.2);
+  border-radius: 25px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+/* Inputs personalizados */
+.login-input {
+  border-radius: 15px;
+  border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
+  padding: 12px 20px;
+}
+
+.login-input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Botón principal */
+.login-button {
+  border-radius: 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  padding: 12px 30px;
+  transition: all 0.3s ease;
+  transform: translateY(0);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.login-button:active {
+  transform: translateY(0);
+}
+
+/* Checkbox personalizado */
+.login-checkbox {
+  border-radius: 4px;
+}
+
+/* Link de forgot password */
+.login-forgot-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.login-forgot-link:hover {
+  color: #764ba2;
+}
+
+/* Alerta de error */
+.login-error-alert {
+  border: 0;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  color: white;
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-form-container {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 991.98px) {
+  .login-container {
+    padding: 10px;
+  }
+  
+  .login-left-panel {
+    min-height: 200px;
+  }
+}
+
+/* Efectos adicionales */
+.login-input::placeholder {
+  color: #adb5bd;
+  opacity: 1;
+}
+
+.login-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

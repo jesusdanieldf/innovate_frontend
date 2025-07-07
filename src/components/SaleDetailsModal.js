@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -9,10 +9,9 @@ function SaleDetailsModal({ sale, setShowDetailsModal, onPaymentMade, onSaleUpda
   const [loading, setLoading] = useState(true);
   const [hasPayment, setHasPayment] = useState(false);
 
-  const fetchDetailSales = async () => {
+  const fetchDetailSales = useCallback(async () => {
     try {
       const response = await axios.get(`http://localhost:8080/api/detailSales/sale-pro/${sale.id}`);
-      // Ordenar los detalles por ID descendente (más reciente primero)
       const sortedDetails = response.data.sort((a, b) => b.id - a.id);
       setDetailSales(sortedDetails);
       setLoading(false);
@@ -20,10 +19,9 @@ function SaleDetailsModal({ sale, setShowDetailsModal, onPaymentMade, onSaleUpda
       console.error("Error fetching detail sales:", error);
       setLoading(false);
     }
-  };
+  }, [sale.id]);
 
-  // Verificar si ya hay un pago asociado a la venta
-  const checkPaymentStatus = async () => {
+  const checkPaymentStatus = useCallback(async () => {
     try {
       const response = await axios.get(`http://localhost:8080/api/payments/sale/${sale.id}`);
       setHasPayment(response.data);
@@ -31,14 +29,14 @@ function SaleDetailsModal({ sale, setShowDetailsModal, onPaymentMade, onSaleUpda
       console.error("Error checking payment status:", error);
       setHasPayment(false);
     }
-  };
+  }, [sale.id]);
 
   useEffect(() => {
     if (sale && sale.id) {
       fetchDetailSales();
       checkPaymentStatus();
     }
-  }, [sale]);
+  }, [sale, fetchDetailSales, checkPaymentStatus]);
 
   const removeDetailSale = async (detailId) => {
     try {
