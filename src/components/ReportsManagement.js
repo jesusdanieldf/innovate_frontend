@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "../style/styleReports.css"; // Importar el CSS personalizado
 
 function ReportsManagement() {
   const [activeTab, setActiveTab] = useState("caja-chica");
@@ -44,29 +45,27 @@ function ReportsManagement() {
       switch (activeTab) {
         case "caja-chica":
           response = await axios.get("http://localhost:8080/api/reports/caja-today-detail");
-          // Ahora response.data es un array de DTOs con propiedades
           setReportData(
             response.data.map(item => ({
               id: item.paymentId,
-              client: `${item.userFirstName} ${item.userLastName}`, // Usuario completo
+              client: `${item.userFirstName} ${item.userLastName}`,
               email: item.email,
               amount: item.amount,
               paymentDate: item.paymentDate,
-              type: 'user' // Indicador para mostrar que es usuario
+              type: 'user'
             }))
           );
           break;
 
         case "caja-semanal":
           response = await axios.get("http://localhost:8080/api/reports/semanal");
-          // Ahora response.data es un array de DTOs con propiedades
           setReportData(
             response.data.map(item => ({
-              client: item.userFullName, // Usuario completo
+              client: item.userFullName,
               totalPaid: item.totalPaid,
               firstPayment: item.minDate,
               lastPayment: item.maxDate,
-              type: 'user' // Indicador para mostrar que es usuario
+              type: 'user'
             }))
           );
           break;
@@ -79,21 +78,19 @@ function ReportsManagement() {
             };
 
             response = await axios.get("http://localhost:8080/api/reports/between", { params });
-            // Ahora response.data es un array de DTOs con propiedades
             setReportData(
               response.data.map(item => ({
                 id: item.paymentId,
                 client: item.client,
-                userName: item.userName, // Usuario que hizo la venta
+                userName: item.userName,
                 email: item.email,
                 amount: item.amount,
                 paymentDate: item.paymentDate,
-                type: 'client_user' // Indicador para mostrar cliente y usuario
+                type: 'client_user'
               }))
             );
 
             const resumenResponse = await axios.get("http://localhost:8080/api/reports/resumen", { params });
-            // Ahora resumenResponse.data es un DTO con propiedades
             const resumen = resumenResponse.data;
 
             const resumenAdapted = {
@@ -167,7 +164,6 @@ function ReportsManagement() {
     let headers, csvContent;
 
     if (activeTab === "caja-fechas") {
-      // Para fechas incluir tanto cliente como usuario
       headers = ["ID", "Cliente", "Usuario", "Email", "Monto", "Fecha de Pago"];
       csvContent = [
         headers.join(","),
@@ -181,13 +177,12 @@ function ReportsManagement() {
         ].join(","))
       ].join("\n");
     } else {
-      // Para caja chica y semanal (que ahora muestran usuarios)
       headers = ["ID", "Usuario", "Email", "Monto", "Fecha de Pago"];
       csvContent = [
         headers.join(","),
         ...reportData.map(item => [
           item.id || "",
-          `"${item.client || ""}"`, // Ahora es el usuario
+          `"${item.client || ""}"`,
           `"${item.email || ""}"`,
           item.amount || item.totalPaid || 0,
           `"${formatDate(item.paymentDate || item.firstPayment)}"`
@@ -204,7 +199,6 @@ function ReportsManagement() {
     window.URL.revokeObjectURL(url);
   };
 
-  // Función para obtener los headers de la tabla según el tab activo
   const getTableHeaders = () => {
     switch (activeTab) {
       case "caja-chica":
@@ -219,8 +213,13 @@ function ReportsManagement() {
   };
 
   return (
-    <div className="container">
-      <h1 className="text-center mb-4">Reports Management</h1>
+    <div className="reports-container">
+      <div className="reports-header">
+        <h1 className="reports-title">
+          <i className="fas fa-chart-line"></i>
+          Reports Management
+        </h1>
+      </div>
 
       <ul className="nav nav-tabs mb-4">
         <li className="nav-item">
@@ -228,6 +227,7 @@ function ReportsManagement() {
             className={`nav-link ${activeTab === "caja-chica" ? "active" : ""}`}
             onClick={() => setActiveTab("caja-chica")}
           >
+            <i className="fas fa-cash-register me-2"></i>
             Caja Chica (Hoy)
           </button>
         </li>
@@ -236,6 +236,7 @@ function ReportsManagement() {
             className={`nav-link ${activeTab === "caja-semanal" ? "active" : ""}`}
             onClick={() => setActiveTab("caja-semanal")}
           >
+            <i className="fas fa-calendar-week me-2"></i>
             Caja Semanal
           </button>
         </li>
@@ -244,85 +245,114 @@ function ReportsManagement() {
             className={`nav-link ${activeTab === "caja-fechas" ? "active" : ""}`}
             onClick={() => setActiveTab("caja-fechas")}
           >
+            <i className="fas fa-calendar-alt me-2"></i>
             Por Rango de Fechas
           </button>
         </li>
       </ul>
 
       {activeTab === "caja-fechas" && (
-        <div className="row mb-4">
-          <div className="col-md-4">
-            <label className="form-label">Fecha Inicio:</label>
-            <input
-              type="date"
-              className="form-control"
-              value={dateRange.startDate}
-              onChange={(e) => handleDateChange("startDate", e.target.value)}
-            />
-          </div>
-          <div className="col-md-4">
-            <label className="form-label">Fecha Fin:</label>
-            <input
-              type="date"
-              className="form-control"
-              value={dateRange.endDate}
-              onChange={(e) => handleDateChange("endDate", e.target.value)}
-            />
-          </div>
-          <div className="col-md-4 d-flex align-items-end">
-            <button
-              className="btn btn-primary me-2"
-              onClick={fetchReportData}
-              disabled={loading}
-            >
-              Buscar
-            </button>
-            <button
-              className="btn btn-success"
-              onClick={exportToCSV}
-              disabled={reportData.length === 0}
-            >
-              Exportar CSV
-            </button>
+        <div className="date-controls">
+          <div className="row mb-4">
+            <div className="col-md-4">
+              <label className="form-label">
+                <i className="fas fa-calendar-plus me-2"></i>
+                Fecha Inicio:
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                value={dateRange.startDate}
+                onChange={(e) => handleDateChange("startDate", e.target.value)}
+              />
+            </div>
+            <div className="col-md-4">
+              <label className="form-label">
+                <i className="fas fa-calendar-minus me-2"></i>
+                Fecha Fin:
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                value={dateRange.endDate}
+                onChange={(e) => handleDateChange("endDate", e.target.value)}
+              />
+            </div>
+            <div className="col-md-4 d-flex align-items-end">
+              <button
+                className="btn btn-primary me-2"
+                onClick={fetchReportData}
+                disabled={loading}
+              >
+                <i className="fas fa-search me-2"></i>
+                Buscar
+              </button>
+              <button
+                className="btn btn-success"
+                onClick={exportToCSV}
+                disabled={reportData.length === 0}
+              >
+                <i className="fas fa-file-excel me-2"></i>
+                Exportar CSV
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {activeTab !== "caja-fechas" && (
-        <div className="mb-3 text-end">
+        <div className="export-section">
           <button
             className="btn btn-success"
             onClick={exportToCSV}
             disabled={reportData.length === 0}
           >
+            <i className="fas fa-file-excel me-2"></i>
             Exportar CSV
           </button>
         </div>
       )}
 
       {activeTab === "caja-fechas" && resumenData && (
-        <div className="row mb-4">
-          <div className="col-md-12">
-            <div className="card bg-light">
-              <div className="card-body">
-                <h5 className="card-title">Resumen del Periodo</h5>
-                <div className="row">
-                  <div className="col-md-3">
-                    <strong>Total Ingresos:</strong><br />
-                    <span className="h4 text-success">{formatCurrency(resumenData.totalAmount)}</span>
-                  </div>
-                  <div className="col-md-3">
-                    <strong>Número de Pagos:</strong><br />
-                    <span className="h4 text-info">{resumenData.numPayments}</span>
-                  </div>
-                  <div className="col-md-3">
-                    <strong>Primer Pago:</strong><br />
-                    <span className="text-muted">{formatDate(resumenData.firstPayment)}</span>
-                  </div>
-                  <div className="col-md-3">
-                    <strong>Último Pago:</strong><br />
-                    <span className="text-muted">{formatDate(resumenData.lastPayment)}</span>
-                  </div>
+        <div className="resumen-card">
+          <div className="card-header">
+            <h5 className="mb-0">
+              <i className="fas fa-chart-pie me-2"></i>
+              Resumen del Periodo
+            </h5>
+          </div>
+          <div className="card-body">
+            <div className="row">
+              <div className="col-md-3">
+                <div className="resumen-stat">
+                  <strong>Total Ingresos:</strong>
+                  <span className="stat-value text-success">
+                    {formatCurrency(resumenData.totalAmount)}
+                  </span>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="resumen-stat">
+                  <strong>Número de Pagos:</strong>
+                  <span className="stat-value text-info">
+                    {resumenData.numPayments}
+                  </span>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="resumen-stat">
+                  <strong>Primer Pago:</strong>
+                  <span className="text-muted">
+                    {formatDate(resumenData.firstPayment)}
+                  </span>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="resumen-stat">
+                  <strong>Último Pago:</strong>
+                  <span className="text-muted">
+                    {formatDate(resumenData.lastPayment)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -331,65 +361,85 @@ function ReportsManagement() {
       )}
 
       {loading && (
-        <div className="text-center mb-4">
+        <div className="loading-container">
           <div className="spinner-border" role="status">
             <span className="visually-hidden">Cargando...</span>
           </div>
+          <span className="loading-text">Cargando datos...</span>
         </div>
       )}
 
-      <div className="table-responsive">
-        <table className="table table-hover">
-          <thead className="table-dark">
-            <tr>
-              {getTableHeaders().map((header, index) => (
-                <th key={index}>{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {currentItems.length > 0 ? (
-              currentItems.map((item, index) => (
-                <tr key={item.id || index}>
-                  {activeTab === "caja-chica" && (
-                    <>
-                      <td>{item.id || "N/A"}</td>
-                      <td>{item.client || "N/A"}</td>
-                      <td>{item.email || "N/A"}</td>
-                      <td className="text-success fw-bold">{formatCurrency(item.amount)}</td>
-                      <td>{formatDate(item.paymentDate)}</td>
-                    </>
-                  )}
-                  {activeTab === "caja-semanal" && (
-                    <>
-                      <td>{item.client || "N/A"}</td>
-                      <td className="text-success fw-bold">{formatCurrency(item.totalPaid)}</td>
-                      <td>{formatDate(item.firstPayment)}</td>
-                      <td>{formatDate(item.lastPayment)}</td>
-                      <td></td>
-                    </>
-                  )}
-                  {activeTab === "caja-fechas" && (
-                    <>
-                      <td>{item.id || "N/A"}</td>
-                      <td>{item.client || "N/A"}</td>
-                      <td><span className="badge bg-info">{item.userName || "N/A"}</span></td>
-                      <td>{item.email || "N/A"}</td>
-                      <td className="text-success fw-bold">{formatCurrency(item.amount)}</td>
-                      <td>{formatDate(item.paymentDate)}</td>
-                    </>
-                  )}
-                </tr>
-              ))
-            ) : (
+      <div className="table-card">
+        <div className="table-responsive">
+          <table className="table table-hover">
+            <thead className="table-dark">
               <tr>
-                <td colSpan={getTableHeaders().length} className="text-center text-muted">
-                  {loading ? "Cargando datos..." : "No hay datos disponibles para mostrar"}
-                </td>
+                {getTableHeaders().map((header, index) => (
+                  <th key={index}>{header}</th>
+                ))}
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {currentItems.length > 0 ? (
+                currentItems.map((item, index) => (
+                  <tr key={item.id || index}>
+                    {activeTab === "caja-chica" && (
+                      <>
+                        <td className="product-id">{item.id || "N/A"}</td>
+                        <td>{item.client || "N/A"}</td>
+                        <td>{item.email || "N/A"}</td>
+                        <td className="text-success fw-bold">{formatCurrency(item.amount)}</td>
+                        <td>{formatDate(item.paymentDate)}</td>
+                      </>
+                    )}
+                    {activeTab === "caja-semanal" && (
+                      <>
+                        <td>{item.client || "N/A"}</td>
+                        <td className="text-success fw-bold">{formatCurrency(item.totalPaid)}</td>
+                        <td>{formatDate(item.firstPayment)}</td>
+                        <td>{formatDate(item.lastPayment)}</td>
+                        <td></td>
+                      </>
+                    )}
+                    {activeTab === "caja-fechas" && (
+                      <>
+                        <td className="product-id">{item.id || "N/A"}</td>
+                        <td>{item.client || "N/A"}</td>
+                        <td>
+                          <span className="badge bg-info">
+                            {item.userName || "N/A"}
+                          </span>
+                        </td>
+                        <td>{item.email || "N/A"}</td>
+                        <td className="text-success fw-bold">{formatCurrency(item.amount)}</td>
+                        <td>{formatDate(item.paymentDate)}</td>
+                      </>
+                    )}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={getTableHeaders().length} className="text-center text-muted">
+                    {loading ? (
+                      <div className="d-flex justify-content-center align-items-center">
+                        <div className="spinner-border spinner-border-sm me-2" role="status">
+                          <span className="visually-hidden">Cargando...</span>
+                        </div>
+                        Cargando datos...
+                      </div>
+                    ) : (
+                      <div className="empty-state">
+                        <i className="fas fa-inbox"></i>
+                        <h4>No hay datos disponibles</h4>
+                        <p>No se encontraron registros para mostrar</p>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {pageNumbers.length > 1 && (
@@ -401,7 +451,7 @@ function ReportsManagement() {
                 onClick={() => setCurrentPage(currentPage - 1)}
                 disabled={currentPage === 1}
               >
-                &laquo;
+                <i className="fas fa-chevron-left"></i>
               </button>
             </li>
 
@@ -422,7 +472,7 @@ function ReportsManagement() {
                 onClick={() => setCurrentPage(currentPage + 1)}
                 disabled={currentPage === pageNumbers.length}
               >
-                &raquo;
+                <i className="fas fa-chevron-right"></i>
               </button>
             </li>
           </ul>

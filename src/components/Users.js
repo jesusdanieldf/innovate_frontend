@@ -1,40 +1,36 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "../style/styleUser.css"; // Importar los estilos personalizados
 import AddUser from "./AddUser";
 import EditUser from "./EditUser";
 
 function UsersManagement({ onSelectUser }) {
   const [users, setUsers] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]); // Estado para los usuarios filtrados
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [showModal, setShowUserModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [loggedInUser, setLoggedInUser] = useState(null); // Usuario autenticado
-  const [searchQuery, setSearchQuery] = useState(""); // Estado para el término de búsqueda
-
-  // Estado para la paginación
+  const [loggedInUser, setLoggedInUser] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 10; // Número de usuarios por página
+  const usersPerPage = 10;
 
-  // Obtener los usuarios y el usuario autenticado
   useEffect(() => {
     axios
       .get("http://localhost:8080/api/users")
       .then((response) => {
         setUsers(response.data);
-        setFilteredUsers(response.data); // Establecer los usuarios filtrados al cargar
+        setFilteredUsers(response.data);
       })
       .catch((error) => {
         console.error("Error fetching users data:", error);
       });
 
-    // Obtener el usuario autenticado
     const storedUser = JSON.parse(localStorage.getItem("user"));
     setLoggedInUser(storedUser);
   }, []);
 
-  // Filtrar usuarios según el término de búsqueda
   useEffect(() => {
     if (searchQuery) {
       setFilteredUsers(
@@ -43,21 +39,19 @@ function UsersManagement({ onSelectUser }) {
         )
       );
     } else {
-      setFilteredUsers(users); // Si no hay consulta, mostrar todos los usuarios
+      setFilteredUsers(users);
     }
-  }, [searchQuery, users]); // Ejecutar cuando la búsqueda o los usuarios cambien
+  }, [searchQuery, users]);
 
-  // Obtener los usuarios que se deben mostrar en la página actual
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
-  // Cambiar de página
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const updateUsersList = (newUser) => {
     setUsers((prevUsers) => [...prevUsers, newUser]);
-    setFilteredUsers((prevUsers) => [...prevUsers, newUser]); // Agregar también a los usuarios filtrados
+    setFilteredUsers((prevUsers) => [...prevUsers, newUser]);
   };
 
   const editUser = (user) => {
@@ -69,140 +63,261 @@ function UsersManagement({ onSelectUser }) {
     try {
       await axios.delete(`http://localhost:8080/api/users/${userId}`);
       setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
-      setFilteredUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId)); // También actualizar los usuarios filtrados
+      setFilteredUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
     } catch (error) {
       console.error("Error deleting user:", error);
     }
   };
 
-  // Determinar el número de páginas
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(filteredUsers.length / usersPerPage); i++) {
     pageNumbers.push(i);
   }
 
+  // Función para determinar la clase del rol
+  const getRoleClass = (roleName) => {
+    const baseClass = "user-role-badge";
+    switch (roleName?.toLowerCase()) {
+      case 'admin':
+        return `${baseClass} user-role-admin`;
+      case 'user':
+        return `${baseClass} user-role-user`;
+      case 'moderator':
+        return `${baseClass} user-role-moderator`;
+      case 'manager':
+        return `${baseClass} user-role-manager`;
+      default:
+        return `${baseClass} user-role-user`;
+    }
+  };
+
   return (
-    <div className="container">
-      <h1 className="text-center mb-4">User Management</h1>
-
-      {/* Campo de búsqueda */}
-      <div className="mb-3">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Search by name"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)} // Actualiza el término de búsqueda
-        />
+    <div className="user-container">
+      {/* Header Section */}
+      <div className="user-header">
+        <div className="user-header-content">
+          <div className="user-header-title">
+            <h1 className="user-title">
+              <i className="bi bi-people-fill"></i>
+              User Management
+            </h1>
+            <p className="user-subtitle">
+              Manage and organize your system users
+            </p>
+          </div>
+          <div className="user-header-stats">
+            <div className="user-count">
+              {filteredUsers.length} User{filteredUsers.length !== 1 ? 's' : ''}
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="mb-3 text-end">
-        <button className="btn btn-outline-primary" onClick={() => setShowUserModal(true)}>
-          <i className="bi bi-plus-circle"></i> New User
-        </button>
+      {/* Controls Section */}
+      <div className="user-controls">
+        <div className="user-search-section">
+          <div className="user-search-container">
+            <i className="bi bi-search user-search-icon"></i>
+            <input
+              type="text"
+              className="user-search-input"
+              placeholder="Search by name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
+        
+        <div className="user-add-button-section">
+          <button 
+            className="user-add-btn" 
+            onClick={() => setShowUserModal(true)}
+          >
+            <i className="bi bi-plus-circle"></i>
+            New User
+          </button>
+        </div>
       </div>
 
-      <table className="table table-hover">
-        <thead className="table-dark">
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentUsers.map((user) => {
-            // Variables de permisos basadas en el rol
-            const canEdit = loggedInUser?.role?.name === "Admin"; // Solo el admin puede editar
-            const canDelete = loggedInUser?.role?.name === "Admin"; // Solo el admin puede eliminar
+      {/* Table Section */}
+      <div className="user-table-container">
+        <div className="user-table-card">
+          <div className="user-table-responsive">
+            <table className="user-table">
+              <thead className="user-table-header">
+                <tr>
+                  <th className="user-table-th">
+                    <i className="bi bi-hash"></i>ID
+                  </th>
+                  <th className="user-table-th">
+                    <i className="bi bi-person"></i>Name
+                  </th>
+                  <th className="user-table-th">
+                    <i className="bi bi-person-badge"></i>Last Name
+                  </th>
+                  <th className="user-table-th">
+                    <i className="bi bi-envelope"></i>Email
+                  </th>
+                  <th className="user-table-th">
+                    <i className="bi bi-shield-check"></i>Role
+                  </th>
+                  <th className="user-table-th">
+                    <i className="bi bi-gear"></i>Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentUsers.map((user) => {
+                  const canEdit = loggedInUser?.role?.name === "Admin";
+                  const canDelete = loggedInUser?.role?.name === "Admin";
 
-            return (
-              <tr key={user.id}>
-                <td>{user.id}</td>
-                <td>{user.fullName}</td>
-                <td>{user.lastName}</td>
-                <td>{user.email}</td>
-                <td>{user.role.name}</td>
-                <td>
-                  {canEdit ? (
-                    <button
-                      className="btn btn-warning btn-sm me-2"
-                      onClick={() => editUser(user)}
-                    >
-                      <i className="bi bi-pencil"></i> {/* Icono de lápiz */}
-                    </button>
-                  ) : (
-                    <button className="btn btn-secondary btn-sm me-2" disabled>
-                      <i className="bi bi-lock"></i>
-                    </button>
-                  )}
-                  {canDelete ? (
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => deleteUser(user.id)}
-                    >
-                      <i className="bi bi-trash"></i> {/* Icono de basura */}
-                    </button>
-                  ) : (
-                    <button className="btn btn-secondary btn-sm" disabled>
-                      <i className="bi bi-lock"></i> {/* Icono de bloqueo */}
-                    </button>
-                  )}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                  return (
+                    <tr key={user.id} className="user-table-row">
+                      <td className="user-table-td">
+                        <span className="user-id">{user.id}</span>
+                      </td>
+                      <td className="user-table-td">
+                        <div className="user-name-info">
+                          <div className="user-name-icon">
+                            <i className="bi bi-person-circle"></i>
+                          </div>
+                          <span className="user-name-text">{user.fullName}</span>
+                        </div>
+                      </td>
+                      <td className="user-table-td">
+                        <div className="user-lastname-info">
+                          <div className="user-lastname-icon">
+                            <i className="bi bi-person-badge"></i>
+                          </div>
+                          <span className="user-lastname-text">{user.lastName}</span>
+                        </div>
+                      </td>
+                      <td className="user-table-td">
+                        <span className="user-email-badge">{user.email}</span>
+                      </td>
+                      <td className="user-table-td">
+                        <span className={getRoleClass(user.role.name)}>
+                          {user.role.name}
+                        </span>
+                      </td>
+                      <td className="user-table-td">
+                        <div className="user-action-buttons">
+                          {canEdit ? (
+                            <button
+                              className="user-action-btn user-edit-btn"
+                              onClick={() => editUser(user)}
+                              title="Edit User"
+                            >
+                              <i className="bi bi-pencil"></i>
+                            </button>
+                          ) : (
+                            <button 
+                              className="user-action-btn user-locked-btn" 
+                              disabled
+                              title="No permissions"
+                            >
+                              <i className="bi bi-lock"></i>
+                            </button>
+                          )}
+                          {canDelete ? (
+                            <button
+                              className="user-action-btn user-delete-btn"
+                              onClick={() => deleteUser(user.id)}
+                              title="Delete User"
+                            >
+                              <i className="bi bi-trash"></i>
+                            </button>
+                          ) : (
+                            <button 
+                              className="user-action-btn user-locked-btn" 
+                              disabled
+                              title="No permissions"
+                            >
+                              <i className="bi bi-lock"></i>
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
-      {/* Paginación */}
-      <nav>
-        <ul className="pagination justify-content-center">
-          {/* Flecha Anterior */}
-          <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-            <button
-              className="page-link"
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              &laquo; {/* Flecha izquierda */}
-            </button>
-          </li>
+      {/* Empty State */}
+      {currentUsers.length === 0 && (
+        <div className="user-empty-state">
+          <div className="user-empty-content">
+            <i className="bi bi-people user-empty-icon"></i>
+            <h3 className="user-empty-title">No users found</h3>
+            <p className="user-empty-text">
+              {searchQuery 
+                ? `No users match "${searchQuery}". Try adjusting your search terms.`
+                : "There are no users in the system yet. Create your first user to get started."
+              }
+            </p>
+            {!searchQuery && (
+              <button 
+                className="user-empty-add-btn"
+                onClick={() => setShowUserModal(true)}
+              >
+                <i className="bi bi-plus-circle"></i>
+                Add First User
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
-          {/* Números de página */}
-          {pageNumbers.map((number) => (
-            <li
-              key={number}
-              className={`page-item ${number === currentPage ? "active" : ""}`}
-            >
-              <button onClick={() => paginate(number)} className="page-link">
-                {number}
+      {/* Pagination */}
+      {pageNumbers.length > 1 && (
+        <div className="user-pagination-container">
+          <ul className="user-pagination">
+            <li className={`user-page-item ${currentPage === 1 ? "disabled" : ""}`}>
+              <button
+                className="user-page-link"
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                &laquo;
               </button>
             </li>
-          ))}
 
-          {/* Flecha Siguiente */}
-          <li className={`page-item ${currentPage === pageNumbers.length ? "disabled" : ""}`}>
-            <button
-              className="page-link"
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === pageNumbers.length}
-            >
-              &raquo; {/* Flecha derecha */}
-            </button>
-          </li>
-        </ul>
-      </nav>
+            {pageNumbers.map((number) => (
+              <li
+                key={number}
+                className={`user-page-item ${number === currentPage ? "active" : ""}`}
+              >
+                <button 
+                  onClick={() => paginate(number)} 
+                  className="user-page-link"
+                >
+                  {number}
+                </button>
+              </li>
+            ))}
 
-      {/* Modal para agregar nuevo usuario */}
+            <li className={`user-page-item ${currentPage === pageNumbers.length ? "disabled" : ""}`}>
+              <button
+                className="user-page-link"
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === pageNumbers.length}
+              >
+                &raquo;
+              </button>
+            </li>
+          </ul>
+        </div>
+      )}
+
+      {/* Modals */}
       {showModal && (
         <AddUser setShowUserModal={setShowUserModal} updateUsersList={updateUsersList} />
       )}
 
-      {/* Modal para editar usuario */}
       {showEditModal && selectedUser && (
         <EditUser
           user={selectedUser}
